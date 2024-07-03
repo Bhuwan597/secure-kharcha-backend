@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 
 @Schema({
     timestamps: true,
@@ -12,13 +12,13 @@ export class Group extends Document {
     description: string;
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
-    owner: string;
+    owner: Types.ObjectId;
 
     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] })
-    members: string[];
+    members: Types.ObjectId[];
 
     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Transaction" }] })
-    transactions: string[];
+    transactions: Types.ObjectId[];
 
     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }] })
     activities: string[];

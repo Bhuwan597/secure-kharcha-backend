@@ -6,6 +6,7 @@ import { CreateGroupDto } from './dtos/create-group.dto';
 import { User } from 'src/user/schemas/user.schema';
 import { Request } from 'express';
 import { generate } from 'rand-token';
+import { UpdateGroupDto } from './dtos/update-group.dto';
 
 declare module 'express' {
   interface Request {
@@ -31,9 +32,20 @@ export class GroupsService {
   }
 
   async getGroup(slug: string) {
-    return await this.groupModel.findOne({
-      _id: slug,
-    }).populate("owner").populate("members");
+    return await this.groupModel
+      .findOne({
+        _id: slug,
+      })
+      .populate('owner')
+      .populate('members')
+      .populate({
+        path: 'transactions',
+        populate: {
+          path: 'transactionBy',
+          model: 'User',
+          select: "displayName firstName lastName photo _id email"
+        },
+      });
   }
 
   async createGroup(formData: CreateGroupDto, req: Request): Promise<Group> {
@@ -44,5 +56,11 @@ export class GroupsService {
       token: generate(64),
     });
     return group;
+  }
+
+  async updateGroup(formData: UpdateGroupDto, slug: string) {
+    return await this.groupModel.findOneAndUpdate({ _id: slug }, formData, {
+      new: true,
+    });
   }
 }

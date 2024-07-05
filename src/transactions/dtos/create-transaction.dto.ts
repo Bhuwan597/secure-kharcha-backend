@@ -15,8 +15,7 @@ export class CreateTransactionDto{
     readonly amount: number;
 
     @IsOptional()
-    @IsString()
-    readonly excluded: Types.ObjectId[]
+    readonly exclude: Types.ObjectId[]
 
     @IsOptional()
     @IsBoolean()

@@ -12,8 +12,8 @@ export class Transaction extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   transactionBy: Types.ObjectId;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  excluded: Types.ObjectId[];
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  exclude: Types.ObjectId[];
 
   @Prop({ default: true })
   split: boolean;

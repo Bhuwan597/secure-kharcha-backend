@@ -32,6 +32,9 @@ export class AuthGuard implements CanActivate {
       let user = await this.userModel.findOne({
         email,
       });
+      if(!user){
+        throw new UnauthorizedException("Unauthorized user.")
+      }
       if (email_verified && !user.emailVerified) {
         user = await this.userModel.findByIdAndUpdate(
           user._id,

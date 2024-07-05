@@ -1,7 +1,7 @@
 import { Injectable, Req } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Transaction } from './schemas/transaction.schema';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { Request } from 'express';
 import { CreateTransactionDto } from './dtos/create-transaction.dto';
 import { Group } from 'src/groups/schemas/group.schema';
@@ -19,8 +19,12 @@ export class TransactionsService {
     @Req() req: Request,
     transactionData: CreateTransactionDto,
   ) {
+    const excludeIds = transactionData?.exclude?.map(
+      (id) => new Types.ObjectId(id),
+    )  || [];
     const transaction = await this.transactionModel.create({
       ...transactionData,
+      exclude: excludeIds,
       transactionBy: req.user._id,
     });
 
@@ -30,9 +34,10 @@ export class TransactionsService {
         $push: {
           transactions: transaction._id,
         },
-      },{
-        new : true
-      }
+      },
+      {
+        new: true,
+      },
     );
 
     return await this.transactionModel.findById(transaction._id);

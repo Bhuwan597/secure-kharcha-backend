@@ -9,9 +9,7 @@ export class AppController {
 
   @Get()
   @UseGuards(AuthGuard)
-  getHello(@Req() req : Request & {user: User}): string {
-    const {emailVerified} = req.user as User;
-    console.log(emailVerified)
-    return this.appService.getHello();
+  getHello(@Req() req : Request & {user: User}) {
+    return  req.user as User;
   };
 }

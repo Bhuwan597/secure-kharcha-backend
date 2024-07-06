@@ -27,8 +27,8 @@ export class GroupsController {
   }
   @Put(':slug')
   @UseGuards(AuthGuard)
-  async updateGroup(@Param('slug') slug : string, @Body() groupData: UpdateGroupDto) {
-    return this.groupService.updateGroup(groupData, slug);
+  async updateGroup(@Req() req: Request, @Param('slug') slug : string, @Body() groupData: UpdateGroupDto) {
+    return this.groupService.updateGroup(req, groupData, slug);
   }
 
   @Post('/join/:slug')

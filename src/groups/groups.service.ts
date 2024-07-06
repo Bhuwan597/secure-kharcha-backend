@@ -37,7 +37,13 @@ export class GroupsService {
         createdAt: 'desc',
       })
       .populate('owner')
-      .populate('members')
+      .populate({
+        path: 'members',
+        populate: {
+          path: 'user',
+          model: 'User',
+        },
+      })
       .populate('transactions', 'amount split');
   }
 
@@ -82,14 +88,29 @@ export class GroupsService {
       owner: req.user._id,
       members: [{ user: req.user._id }],
       token: generate(64),
+      activities: [
+        { displayName: req.user.displayName, content: 'created the group' },
+      ],
     });
     return group;
   }
 
-  async updateGroup(formData: UpdateGroupDto, slug: string) {
-    return await this.groupModel.findOneAndUpdate({ _id: slug }, formData, {
-      new: true,
-    });
+  async updateGroup(req: Request, formData: UpdateGroupDto, slug: string) {
+    return await this.groupModel.findOneAndUpdate(
+      { _id: slug },
+      {
+        ...formData,
+        $push: {
+          activities: {
+            displayName: req.user.displayName,
+            content: 'updated the group',
+          },
+        },
+      },
+      {
+        new: true,
+      },
+    );
   }
 
   async joinGroup(group: string, joinData: JoinGroupDto, req: Request) {
@@ -116,6 +137,10 @@ export class GroupsService {
         $push: {
           members: {
             user: req.user._id,
+          },
+          activities: {
+            displayName: req.user._id,
+            content: 'joined the group',
           },
         },
       },

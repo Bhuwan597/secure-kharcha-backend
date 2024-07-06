@@ -1,7 +1,8 @@
 import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { Types } from "mongoose";
 
-export class CreateTransactionDto{
+export class UpdateTransactionDto{
+
     @IsNotEmpty()
     @IsString()
     readonly group: Types.ObjectId

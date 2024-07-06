@@ -3,13 +3,16 @@ import mongoose, { Document, Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Transaction extends Document {
-  @Prop()
+  @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'Group', required: true})
+  group: Types.ObjectId
+
+  @Prop({required: true})
   title: string;
 
-  @Prop()
+  @Prop({required: true})
   amount: number;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   transactionBy: Types.ObjectId;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })

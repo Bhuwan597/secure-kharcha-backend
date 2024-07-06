@@ -1,8 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import mongoose from 'mongoose';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { Request } from 'express';
 
 @Injectable()
 export class UserService {
@@ -33,5 +35,13 @@ export class UserService {
     } else {
       return user;
     }
+  }
+
+  async updateUser(req: Request, userData: UpdateUserDto){
+    const user =  await this.userModel.findByIdAndUpdate(req.user._id, userData, {new: true});
+    if(!user){
+      throw new InternalServerErrorException("Some error occured.")
+    }
+    return user;
   }
 }
